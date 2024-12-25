@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>企业信息查询系统</title>
+    <style>
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+
+        /* 页眉样式 */
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+            color: #2c3e50;
+        }
+
+        /* 链接样式 */
+        a {
+            text-decoration: none;
+            color: white;
+            display: block;
+            padding: 12px 20px;
+            background-color: #3498db;
+            border-radius: 5px;
+            margin: 10px 0;
+            text-align: center;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        a:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        a:active {
+            background-color: #1f6f91;
+            transform: translateY(1px);
+        }
+
+        /* 功能列表样式 */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 50px auto;
+            width: 300px;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        /* 页面内容居中 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            ul {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>企业信息查询系统</h1>
+    <p style="text-align: center; font-size: 18px; color: #555;">选择一个功能：</p>
+    <ul>
+        <li><a href="/searchByName">企业名称查询</a></li>
+        <li><a href="/getRelatedEnterprises">关联企业查询</a></li>
+        <li><a href="/getEnterpriseInfoAnswer">企业信息问答</a></li>
+    </ul>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>相关企业信息</title>
+
+</head>
+<body>
+
+<h1>相关企业信息</h1>
+
+<!-- 查询结果 -->
+<div>
+    <div th:if="${message}">
+        <!-- 显示消息 -->
+        <p th:text="${message}" style="color: red; font-weight: bold;"></p>
+    </div>
+</div>
+
+</body>
+</html>

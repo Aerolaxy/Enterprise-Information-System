@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>企业信息列表</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .table-container {
+            width: 100%;
+            height: 500px; /* 设置高度以实现垂直滚动 */
+            overflow: auto; /* 同时支持横向和垂直滚动 */
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            min-width: 1500px;
+            border-collapse: collapse;
+
+        }
+
+        th, td {
+            padding: 8px 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+            white-space: nowrap; /* 防止文本换行，保持紧凑 */
+            overflow: hidden;
+            text-overflow: ellipsis; /* 超出内容用省略号表示 */
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        td {
+            font-size: 13px;
+            background-color: #f9f9f9;
+        }
+
+        td:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* 弹出窗口样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            width: 50%;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .modal-footer {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+        }
+        /* 表单样式 */
+        form {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 15px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 250px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            background-color: #1f6f91;
+            transform: translateY(1px);
+        }
+
+        /* 消息提示样式 */
+        .message {
+            text-align: center;
+            color: red;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        /* 表格样式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+
+        td {
+            background-color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+
+    <script>
+        // 打开弹出窗口并显示简介内容
+        function openModal(content) {
+            const modal = document.getElementById("myModal");
+            const modalContent = document.getElementById("modalContent");
+            modalContent.textContent = content;
+            modal.style.display = "block";
+        }
+
+        // 关闭弹出窗口
+        function closeModal() {
+            const modal = document.getElementById("myModal");
+            modal.style.display = "none";
+        }
+        window.onload = function () {
+            // 如果有 message 的内容，则弹出提示框
+            const message = "[[${message}]]";
+            if (message) {
+                alert(message);
+            }
+        }
+    </script>
+</head>
+<body>
+
+<h1>企业信息列表</h1>
+<div>
+    <form action="/searchByName" method="get">
+        <input type="text" name="name" placeholder="按名称查询">
+        <button type="submit">查询</button>
+    </form>
+    <form action="/searchByAbbreviation" method="get">
+        <input type="text" name="abbreviation" placeholder="按简称查询">
+        <button type="submit">查询</button>
+    </form>
+</div>
+<div th:if="${message}">
+    <!-- 显示消息 -->
+    <p th:text="${message}" style="color: red; font-weight: bold;"></p>
+</div>
+<div th:if="${#lists.isEmpty(enterprises)}">
+    <!-- 如果查询结果为空 -->
+    <p>未找到相关企业。</p>
+</div>
+
+<div class="table-container">
+    <table th:if="${!#lists.isEmpty(enterprises)}">
+        <thead>
+        <tr>
+            <th>企业名称</th>
+            <th>注册地址</th>
+            <th>类型</th>
+            <th>注册日期</th>
+            <th>年份</th>
+            <th>省份</th>
+            <th>城市</th>
+            <th>地区</th>
+            <th>行业</th>
+            <th>投保分部</th>
+            <th>注册资本</th>
+            <th>资本分部</th>
+            <th>状态</th>
+            <th>原名称</th>
+            <th>通信地址</th>
+            <th>纳税人ID</th>
+            <th>注册号</th>
+            <th>组织机构号</th>
+            <th>公司简介</th>
+            <th>经营范围</th>
+            <th>是否上市</th>
+            <th>上市类型</th>
+            <th>简称</th>
+            <th>股票代码</th>
+            <th>产品</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="enterprise : ${enterprises}">
+            <td th:text="${enterprise.name}"></td>
+            <td th:text="${enterprise.registeredAddress}"></td>
+            <td th:text="${enterprise.type}"></td>
+            <td th:text="${enterprise.date}"></td>
+            <td th:text="${enterprise.year}"></td>
+            <td th:text="${enterprise.province}"></td>
+            <td th:text="${enterprise.city}"></td>
+            <td th:text="${enterprise.district}"></td>
+            <td th:text="${enterprise.industry}"></td>
+            <td th:text="${enterprise.insuredDivision}"></td>
+            <td th:text="${enterprise.registeredCapital}"></td>
+            <td th:text="${enterprise.captitalDivision}"></td>
+            <td th:text="${enterprise.status}"></td>
+            <td th:text="${enterprise.formerName}"></td>
+            <td th:text="${enterprise.communicationAddress}"></td>
+            <td th:text="${enterprise.taxpayerID}"></td>
+            <td th:text="${enterprise.registerationID}"></td>
+            <td th:text="${enterprise.organizationID}"></td>
+            <td style="cursor: pointer; color: blue; text-decoration: underline;"
+                th:onclick="'openModal(\'简介: \' + ${enterprise.introduction})'">查看简介</td>
+            <td th:text="${enterprise.businessScope}"></td>
+            <td th:text="${enterprise.listedOrNot}"></td>
+            <td th:text="${enterprise.listingType}"></td>
+            <td th:text="${enterprise.abbreviation}"></td>
+            <td th:text="${enterprise.stockCode}"></td>
+            <td th:text="${enterprise.products}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- 简介弹出窗口 (Modal) -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>企业简介</h2>
+        </div>
+        <div id="modalContent">
+            <!-- 简介内容通过JS动态填充 -->
+        </div>
+        <div class="modal-footer">
+            <button onclick="closeModal()">关闭</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
