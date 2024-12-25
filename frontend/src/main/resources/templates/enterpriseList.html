@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>企业信息</title>
+    <script>
+        // 定义前端逻辑，用于在页面加载时弹出提示框
+        window.onload = function () {
+            // 如果有 message 的内容，则弹出提示框
+            const message = "[[${message}]]";
+            if (message) {
+                alert(message);
+            }
+        }
+    </script>
+</head>
+<body>
+
+<h1>企业信息列表</h1>
+
+<div>
+    <form action="/searchByName" method="get">
+        <input type="text" name="name" placeholder="按名称查询">
+        <button type="submit">查询</button>
+    </form>
+    <form action="/searchByAbbreviation" method="get">
+        <input type="text" name="abbreviation" placeholder="按简称查询">
+        <button type="submit">查询</button>
+    </form>
+</div>
+
+<!-- 查询结果 -->
+<div>
+    <h2>企业列表</h2>
+    <div th:if="${message}">
+        <!-- 显示消息 -->
+        <p th:text="${message}" style="color: red; font-weight: bold;"></p>
+    </div>
+    <div th:if="${#lists.isEmpty(enterprises)}">
+        <!-- 如果查询结果为空 -->
+        <p>未找到相关企业。</p>
+    </div>
+    <table th:if="${!#lists.isEmpty(enterprises)}">
+        <thead>
+        <tr>
+            <th>企业名称</th>
+            <th>行业</th>
+            <th>省份</th>
+            <th>城市</th>
+            <th>状态</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="enterprise : ${enterprises}">
+            <td th:text="${enterprise.name}"></td>
+            <td th:text="${enterprise.industry}"></td>
+            <td th:text="${enterprise.province}"></td>
+            <td th:text="${enterprise.city}"></td>
+            <td th:text="${enterprise.status}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
+

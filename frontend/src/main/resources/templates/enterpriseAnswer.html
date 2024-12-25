@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>企业信息问答</title>
+</head>
+<body>
+
+<h1>企业信息问答</h1>
+
+<div>
+    <form action="/getEnterpriseInfoAnswer" method="get">
+        <input type="text" name="question" placeholder="请输入您的问题">
+        <button type="submit">查询</button>
+    </form>
+</div>
+
+<div th:if="${answer}">
+    <h2>回答：</h2>
+    <p th:text="${answer}"></p>
+</div>
+
+</body>
+</html>
